@@ -12,6 +12,11 @@ BOT_NAME = 'quotes_js_scraper'
 SPIDER_MODULES = ['quotes_js_scraper.spiders']
 NEWSPIDER_MODULE = 'quotes_js_scraper.spiders'
 
+DOWNLOAD_HANDLERS = {
+    "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+    "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+}
+TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'quotes_js_scraper (+http://www.yourdomain.com)'
