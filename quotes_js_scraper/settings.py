@@ -6,6 +6,10 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import logging
+
+# Set the log level for scrapy-playwright logger to INFO
+logging.getLogger('scrapy-playwright').setLevel(logging.INFO)
 
 BOT_NAME = 'quotes_js_scraper'
 
