@@ -11,3 +11,15 @@ from itemadapter import ItemAdapter
 class QuotesJsScraperPipeline:
     def process_item(self, item, spider):
         return item
+
+# class ProductsScraperPipeline:
+#     def process_item(self, item, spider):
+
+#         adapter = ItemAdapter(item)
+        
+#         field_names = adapter.field_names()
+#         images = adapter.get('images')
+#         for image in images:
+#             image = image 
+        
+#         return item

@@ -13,3 +13,11 @@ class QuoteItem(scrapy.Item):
     tags = scrapy.Field()
 
     
+class ProductItem(scrapy.Item): 
+    # define the fields for your item
+    name = scrapy.Field()
+    price = scrapy.Field()
+    sku = scrapy.Field()
+    url = scrapy.Field()
+    reviews_grade = scrapy.Field()
+    review_images = scrapy.Field()

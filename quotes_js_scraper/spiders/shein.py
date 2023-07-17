@@ -1,12 +1,12 @@
 import scrapy
 from scrapy_playwright.page import PageMethod
-from time import sleep
+from quotes_js_scraper.items import ProductItem
 class SheinSpider(scrapy.Spider):
     name = "shein"
     allowed_domains = ["br.shein.com"]
 
     def start_requests(self):
-        url = 'https://br.shein.com/SHEIN-MOD-Solid-PU-Leather-Tube-Top-p-12877530-cat-2223.html'
+        url = 'https://us.shein.com/SHEIN-SXY-Striped-and-Letter-Graphic-Tube-Top-Skirt-p-11592041-cat-1780.html'
         yield scrapy.Request(url, callback=self.parse, meta=dict(
             playwright=True,
             playwright_include_page=True,
@@ -16,7 +16,6 @@ class SheinSpider(scrapy.Spider):
                 PageMethod('evaluate', 'window.scrollBy(0, document.body.scrollHeight)'),
                 PageMethod('wait_for_selector', "div.common-reviews__list"),
                 PageMethod('evaluate', 'document.querySelector("span.j-expose__review-image-tab-target").click()'),
-                # PageMethod('evaluate', 'document.querySelector("span.sui-pagination__next").click()'),
                 PageMethod('wait_for_timeout', 5000),
             ],
             errback=self.errback
@@ -24,31 +23,62 @@ class SheinSpider(scrapy.Spider):
 
     async def parse(self, response):
         page = response.meta['playwright_page']
-        loopIndexPage = 0
-        last_image_src = None
+        product_info = await self.extract_product_info(page)
+        product_images = await self.extract_product_images(page)
         
+        
+        # Yield product details along with all image URLs
+        product_item = ProductItem()
+        
+        product_item['name'] = product_info['name']
+        product_item['price'] = product_info['price']
+        product_item['sku'] = product_info['sku']
+        product_item['url'] = product_info['url']
+        product_item['reviews_grade'] = product_info['reviews_grade']
+        product_item['review_images'] = product_images
+        
+        yield product_item    
+        
+        await page.close()
+
+    async def extract_product_images(self, page):
+        last_image_src = None
+        image_urls = []
         while True:  
             reviews = await page.query_selector('div.common-reviews__list')
             review_items = await reviews.query_selector_all('div.j-expose__common-reviews__list-item')
             for review_item in review_items:
                 for image in await review_item.query_selector_all('img.j-review-img'):
                     image_src = await image.get_attribute('data-src')
-                    yield {
-                        'image': image_src
-                    }
+                    if image_src and not image_src.startswith('https:'):
+                        image_src = 'https:' + image_src
+                    image_urls.append(image_src)
                     # Save the last image_src to check if it changes in the next page
                     last_image_src = image_src
                     
-            loopIndexPage += 1
             disabled_next_reviews = await page.query_selector('span.sui-pagination__next.sui-pagination__btn-disabled')
             if disabled_next_reviews:
                 break
             await page.evaluate('document.querySelector("span.sui-pagination__next").click()')
             await page.wait_for_function(f'() => !document.querySelector(\'img[data-src="{last_image_src}"]\')')
+        return image_urls
+        
+    async def extract_product_info(self, page):
+        product_name = await page.evaluate('document.querySelector(".product-intro__head-name").textContent')
+        product_price = await page.evaluate('document.evaluate(\'//*[@id="goods-detail-v3"]/div/div[1]/div/div[2]/div[2]/div/div[1]/div[2]/div/div/span\', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent')
+        product_sku = await page.evaluate('document.querySelector(".product-intro__head-sku").textContent')
+        product_url = page.url
+        review_grade_element = await page.evaluate_handle('document.evaluate(\'//*[@id="goods-detail-v3"]/div/div[1]/div/div[2]/div[2]/div/div[1]/div[1]/div[2]/span\', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue')
+        review_grade = await review_grade_element.get_attribute('aria-label')
 
-        await page.close()
-
-
+        return {
+            'name': product_name,
+            'price': product_price,
+            'sku': product_sku,
+            'url': product_url,
+            'reviews_grade': review_grade,
+        }
+    
     async def errback(self, failure):
         page = failure.request.meta['playwright_page']
         await page.close()
