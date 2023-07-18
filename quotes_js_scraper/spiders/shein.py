@@ -48,10 +48,7 @@ class SheinSpider(scrapy.Spider):
             product_item['reviews_grade'] = product_info['reviews_grade']
             product_item['review_images'] = product_images
             
-            yield product_item    
-        
-       
-        
+            yield product_item     
         
         await page.close()
 

@@ -9,7 +9,7 @@ class SipSpider(CrawlSpider):
     
     rules = (
         Rule(LinkExtractor(allow='collections', deny='products')),
-        Rule(LinkExtractor(allow='producst'), callback='parse_item')
+        Rule(LinkExtractor(allow='products'), callback='parse_item')
     )
     def parse_item(self, response):
         yield {
