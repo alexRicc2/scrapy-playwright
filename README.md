@@ -27,5 +27,5 @@ In most of the videos we use the commands below to
 6. Running the scrapy project: `scrapy crawl quotes` 
 
 
-
+playwright only run ins in linux
 
