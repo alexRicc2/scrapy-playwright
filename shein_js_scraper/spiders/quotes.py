@@ -1,5 +1,5 @@
 import scrapy
-from quotes_js_scraper.items import QuoteItem
+from shein_js_scraper.items import QuoteItem
 from scrapy_playwright.page import PageMethod
 
 class QuotesSpider(scrapy.Spider):

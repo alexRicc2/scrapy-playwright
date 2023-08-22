@@ -1,4 +1,4 @@
-# Scrapy settings for quotes_js_scraper project
+# Scrapy settings for shein_js_scraper project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,14 +7,29 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import logging
+import os
+import dotenv
+
+dotenv.load_dotenv()
+
+ENV_PASSWORD = os.environ["password"]
+
 
 # Set the log level for scrapy-playwright logger to INFO
 logging.getLogger('scrapy-playwright').setLevel(logging.INFO)
 
-BOT_NAME = 'quotes_js_scraper'
+PLAYWRIGHT_LAUNCH_OPTIONS = {
+    "proxy": {
+        "server": "p.webshare.io:80",
+        "username": "jnapukeg-rotate",
+        "password": ENV_PASSWORD,
+    },
+}
 
-SPIDER_MODULES = ['quotes_js_scraper.spiders']
-NEWSPIDER_MODULE = 'quotes_js_scraper.spiders'
+BOT_NAME = 'shein_js_scraper'
+
+SPIDER_MODULES = ['shein_js_scraper.spiders']
+NEWSPIDER_MODULE = 'shein_js_scraper.spiders'
 
 DOWNLOAD_HANDLERS = {
     "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
@@ -23,7 +38,7 @@ DOWNLOAD_HANDLERS = {
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'quotes_js_scraper (+http://www.yourdomain.com)'
+#USER_AGENT = 'shein_js_scraper (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -54,13 +69,13 @@ ROBOTSTXT_OBEY = False
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'quotes_js_scraper.middlewares.QuotesJsScraperSpiderMiddleware': 543,
+#    'shein_js_scraper.middlewares.QuotesJsScraperSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'quotes_js_scraper.middlewares.QuotesJsScraperDownloaderMiddleware': 543,
+#    'shein_js_scraper.middlewares.QuotesJsScraperDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -72,7 +87,7 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    'quotes_js_scraper.pipelines.QuotesJsScraperPipeline': 300,
+#    'shein_js_scraper.pipelines.QuotesJsScraperPipeline': 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)

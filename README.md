@@ -23,9 +23,11 @@ In most of the videos we use the commands below to
 2. Create a Python Virtual Environment: `python3 -m venv venv`
 3. Activate the Python Virtual Environment: `source venv/bin/activate`
 4. Install Scrapy using pip: `pip install scrapy`
-5. Listing the scrapy projects `scrapy list` 
-6. Running the scrapy project: `scrapy crawl quotes` 
+5. Install scrapy-playwright using pip: `pip install scrapy-playwright`
+6. Install the browser that it will be used: `playwright install`
+7. Listing the scrapy projects `scrapy list` 
+8. Running the scrapy project: `scrapy crawl quotes` 
 
 
-playwright only run ins in linux
+playwright only runs in in linux
 

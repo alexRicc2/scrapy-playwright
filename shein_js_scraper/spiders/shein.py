@@ -1,18 +1,19 @@
 import scrapy
 from scrapy_playwright.page import PageMethod
-from quotes_js_scraper.items import ProductItem
+from shein_js_scraper.items import ProductItem
 class SheinSpider(scrapy.Spider):
     name = "shein"
     allowed_domains = ["br.shein.com", "us.shein.com"]
     start_url = ['https://us.shein.com/SHEIN-SXY-Striped-and-Letter-Graphic-Tube-Top-Skirt-p-11592041-cat-1780.html', 'https://us.shein.com/SHEIN-Coolane-Newspaper-Print-Bodycon-Dress-p-12241730-cat-1727.html' ]
     def start_requests(self):
-        for url in self.start_url:            
+        for url in self.start_url:
+            # scrapeops_url = 'https://proxy.scrapeops.io/v1/?api_key=ecca5765-d3b6-4515-bb94-f1b77da1afd1&url=' + url             
             yield scrapy.Request(url, callback=self.parse, meta=dict(
                 playwright=True,
                 playwright_include_page=True,
                 playwright_page_methods=[
-                    PageMethod('wait_for_selector', 'i.icon-close.she-close'),
-                    PageMethod('click', 'i.icon-close.she-close'),
+                    # PageMethod('wait_for_selector', 'i.iconfont.icon-close.she-close'),
+                    # PageMethod('click', 'i.iconfont.icon-close.she-close'),
                     PageMethod('evaluate', 'window.scrollBy(0, document.body.scrollHeight)'),
                     PageMethod('wait_for_selector', "div.common-reviews__list"),
                     PageMethod('evaluate', 'document.querySelector("span.j-expose__review-image-tab-target").click()'),
